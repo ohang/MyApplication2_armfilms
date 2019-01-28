@@ -36,22 +36,12 @@ public class fragment_search extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
+
+
         String strtext=getArguments().getString("message");
 
         View rootview =inflater.inflate(R.layout.fragment_m, parent, false);
-        mInterstitialAd = new InterstitialAd(getActivity());
-        mInterstitialAd.setAdUnitId("ca-app-pub-9939890174467872/9550634079");
 
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                // Load the next interstitial.
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-
-        });
 
         myDbHelper = new DataBaseHelper(getActivity());
 
@@ -84,7 +74,7 @@ public class fragment_search extends Fragment {
         while(info.moveToNext()){
 
             names.add(info.getString(1));
-            images.add("https://raw.githubusercontent.com/ohang/countries/master/" + info.getString(info.getColumnIndex("img")) + ".jpg");
+            images.add("https://raw.githubusercontent.com/ohang/haykakan/master/" + info.getString(info.getColumnIndex("img")) + ".jpg");
 
 
         }
@@ -108,6 +98,7 @@ public class fragment_search extends Fragment {
         adapter.setClickListener(new MyRecyclerViewAdapter.ItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+
 
                 Intent myIntent = new Intent(getActivity(), film_activity.class);
                 String film_name =(String) adapter.getItem(position);

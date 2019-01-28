@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Downloader;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 
@@ -44,19 +47,38 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     // binds the data to the textview in each cell
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         String animal = mData[position];
         holder.myTextView.setText(animal);
-        String  PACKAGE_NAME = holder.itemView.getContext().getPackageName();
+
+        Picasso.get()
+                .load(image[position])
+                .into(holder.grid, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Picasso.get()
+                                .load(image[position])
+                                .networkPolicy(NetworkPolicy.OFFLINE)
+                                .into(holder.grid);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
 
 
-
-        Picasso.with(context).load(image[position]).into(holder.grid);
+                });
+        //Picasso.with(context).load(image[position]).into(holder.grid);
+      //  Glide.with(context)
+        //        .load(image[position])
+          //      .into(holder.grid);
 
 
 
 
     }
+
 
     // total number of cells
     @Override

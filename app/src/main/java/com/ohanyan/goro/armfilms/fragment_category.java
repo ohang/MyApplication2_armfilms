@@ -4,6 +4,7 @@ package com.ohanyan.goro.armfilms;
  * Created by Goro on 08.03.2018.
  */
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,18 +15,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
+
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
+import  static  com.ohanyan.goro.armfilms.MainActivity.mInterstitialAd;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class fragment_category extends Fragment {
-    public InterstitialAd mInterstitialAd;
     DataBaseHelper myDbHelper;
     MyRecyclerViewAdapter adapter;
 
@@ -35,22 +35,13 @@ public class fragment_category extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
+
+
+
         String strtext=getArguments().getString("message");
 
         View rootview =inflater.inflate(R.layout.fragment_m, parent, false);
-        mInterstitialAd = new InterstitialAd(getActivity());
-        mInterstitialAd.setAdUnitId("ca-app-pub-9939890174467872/9550634079");
 
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                // Load the next interstitial.
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-
-        });
         myDbHelper = new DataBaseHelper(getActivity());
 
         try {
@@ -84,7 +75,7 @@ public class fragment_category extends Fragment {
             while(info.moveToNext()) {
 
                 names.add(info.getString(1));
-                images.add("https://raw.githubusercontent.com/ohang/countries/master/" + info.getString(info.getColumnIndex("img")) + ".jpg");
+                images.add("https://raw.githubusercontent.com/ohang/haykakan/master/" + info.getString(info.getColumnIndex("img")) + ".jpg");
 
 
             }
@@ -101,7 +92,7 @@ public class fragment_category extends Fragment {
             while(info.moveToNext()){
 
                 names.add(info.getString(1));
-                images.add("https://raw.githubusercontent.com/ohang/countries/master/"+info.getString(info.getColumnIndex("img"))+".jpg");
+                images.add("https://raw.githubusercontent.com/ohang/haykakan/master/"+info.getString(info.getColumnIndex("img"))+".jpg");
 
 
 
@@ -117,7 +108,7 @@ public class fragment_category extends Fragment {
 
                names.add(info.getString(1));
               // images.add(getResources().getIdentifier((info.getString(info.getColumnIndex("img"))), "drawable", getActivity().getPackageName()));
-               images.add("https://raw.githubusercontent.com/ohang/countries/master/"+info.getString(info.getColumnIndex("img"))+".jpg");
+               images.add("https://raw.githubusercontent.com/ohang/haykakan/master/"+info.getString(info.getColumnIndex("img"))+".jpg");
 
 
            }
@@ -129,7 +120,7 @@ public class fragment_category extends Fragment {
 
                 names.add(info.getString(1));
                 // images.add(getResources().getIdentifier((info.getString(info.getColumnIndex("img"))), "drawable", getActivity().getPackageName()));
-                images.add("https://raw.githubusercontent.com/ohang/countries/master/" + info.getString(info.getColumnIndex("img")) + ".jpg");
+                images.add("https://raw.githubusercontent.com/ohang/haykakan/master/" + info.getString(info.getColumnIndex("img")) + ".jpg");
 
 
             }
@@ -139,13 +130,28 @@ public class fragment_category extends Fragment {
         stockArr = names.toArray(stockArr);
 
         String[] image = new String[images.size()];
-        image = images.toArray(image);
+       image = images.toArray(image);
 
         RecyclerView recyclerView = (RecyclerView) rootview.findViewById(R.id.rvNumbers);
 
-        int numberOfColumns = 2;
+
+        Configuration conf = getResources().getConfiguration();
+        int numberOfColumns =2;
+
+        boolean isLarge = (conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_LARGE) ==
+                Configuration.SCREENLAYOUT_SIZE_LARGE;
+
+        boolean isLandscape = (conf.orientation == Configuration.ORIENTATION_LANDSCAPE);
+
+        boolean isLargeLand = isLarge && isLandscape;
+         if (isLandscape){
+
+             numberOfColumns=3;
+         }
+
+
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), numberOfColumns));
-        adapter = new MyRecyclerViewAdapter(getActivity(), stockArr,image);
+        adapter = new MyRecyclerViewAdapter(getActivity().getApplicationContext(), stockArr,image);
         recyclerView.setAdapter(adapter);
 
 
@@ -153,6 +159,7 @@ public class fragment_category extends Fragment {
         adapter.setClickListener(new MyRecyclerViewAdapter.ItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+
 
                 Intent myIntent = new Intent(getActivity(), film_activity.class);
                 String film_name =(String) adapter.getItem(position);

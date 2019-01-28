@@ -4,15 +4,20 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+
+
 /**
  * Created by Goro on 12.03.2018.
  */
 
 public class SplashScreen extends Activity {
+
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashlayout);
+
 
         // Make call to execute AsycTasks<> here
         // This helps avoid the extra step of clicking on a button
@@ -22,7 +27,7 @@ public class SplashScreen extends Activity {
             public void run() {
                 try {
                     sleep(1500);
-                } catch(InterruptedException e) {
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
                     // After 2 seconds the Splashscreen will disappear and user is taken to MainActivity
@@ -33,6 +38,8 @@ public class SplashScreen extends Activity {
         };
 
         timerThread.start();
+
+
     }
 
     @Override

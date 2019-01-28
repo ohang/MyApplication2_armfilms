@@ -1,6 +1,7 @@
 package com.ohanyan.goro.armfilms;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.SearchView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,13 +14,14 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ArrayAdapter adapter;
-
+    public static InterstitialAd mInterstitialAd;
 
 
 
@@ -27,9 +29,11 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MobileAds.initialize(this, "ca-app-pub-9939890174467872~1715541934");
 
-
-
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-9939890174467872/8899374601");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
 
         Bundle bundle=new Bundle();
@@ -67,6 +71,8 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
+
 
    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -118,7 +124,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-
+        item.setChecked(true);
         if (id == R.id.page_main) {
             Bundle bundle=new Bundle();
             bundle.putString("message", "main");
@@ -232,7 +238,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+       DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

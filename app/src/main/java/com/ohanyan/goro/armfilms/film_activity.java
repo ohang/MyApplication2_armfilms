@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubePlayer.PlayerStateChangeListener;
 
@@ -15,7 +16,10 @@ import com.google.android.youtube.player.YouTubePlayer.PlaybackEventListener;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.IOException;
 
@@ -28,7 +32,9 @@ public class film_activity extends YouTubeBaseActivity implements YouTubePlayer.
     String description;
     String fname;
     String fcate;
+    Cursor info;
     int img;
+    private InterstitialAd mInterstitialAd;
 
     DataBaseHelper myDbHelper;
 
@@ -45,7 +51,9 @@ public class film_activity extends YouTubeBaseActivity implements YouTubePlayer.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.film_page);
 
-         film_name = (TextView)findViewById(R.id.text1);
+
+
+        film_name = (TextView)findViewById(R.id.text1);
          film_desc=  (TextView)findViewById(R.id.filmdesc);
          film_year=(TextView)findViewById(R.id.film_year);
          film_country=(TextView)findViewById(R.id.film_country);
@@ -80,7 +88,7 @@ public class film_activity extends YouTubeBaseActivity implements YouTubePlayer.
         }
 
             SQLiteDatabase mydb1 = myDbHelper.getReadableDatabase();
-            Cursor info = mydb1.rawQuery("SELECT * FROM film WHERE name=" +"'"+ name +"'"+ "    ", null);
+             info = mydb1.rawQuery("SELECT * FROM film WHERE name=" +"'"+ name +"'"+ "    ", null);
             info.moveToNext();
             fname=info.getString(info.getColumnIndex("name"));
             country=info.getString(info.getColumnIndex("country"));
@@ -94,11 +102,28 @@ public class film_activity extends YouTubeBaseActivity implements YouTubePlayer.
             film_year.setText(year+"");
             film_country.setText(country);
             film_category.setText(fcate);
+        Picasso.get()
+                .load("https://raw.githubusercontent.com/ohang/haykakan/master/" + info.getString(info.getColumnIndex("img")) + ".jpg")
+                .into(fimg, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Picasso.get()
+                                .load("https://raw.githubusercontent.com/ohang/haykakan/master/" + info.getString(info.getColumnIndex("img")) + ".jpg")
+                                .networkPolicy(NetworkPolicy.OFFLINE)
+                                .into(fimg);
+                    }
 
-         int id = getResources().getIdentifier((info.getString(info.getColumnIndex("img"))), "drawable", this.getPackageName());
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+
+
+                });
+       ///  int id = getResources().getIdentifier((info.getString(info.getColumnIndex("img"))), "drawable", this.getPackageName());
 
       //  Picasso.with(getApplicationContext()).load("http://arm-film.ru/uploads/posts/2017-09/1505805385_super-mama-2.jpg").into(fimg);
-        fimg.setImageResource(id);
+      //  fimg.setImageResource(id);
 
 
 
